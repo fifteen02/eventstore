@@ -1,0 +1,44 @@
+<assembly xmlns="http://maven.apache.org/ASSEMBLY/2.2.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/ASSEMBLY/2.2.0 https://maven.apache.org/xsd/assembly-2.2.0.xsd">
+    <id>otel-javaagent-extension</id>
+    <formats>
+        <format>jar</format>
+    </formats>
+    <includeBaseDirectory>false</includeBaseDirectory>
+    <!--
+        The OpenTelemetry Java agent loads extensions with its own classloader,
+        so Google auth classes inside the Spring Boot application jar are not visible
+        to the GCP auth extension. This assembly creates a single extension jar
+        containing the extension and the runtime classes it needs.
+    -->
+    <dependencySets>
+        <dependencySet>
+            <useProjectArtifact>false</useProjectArtifact>
+            <unpack>true</unpack>
+            <scope>runtime</scope>
+            <includes>
+                <include>io.opentelemetry.contrib:opentelemetry-gcp-auth-extension</include>
+                <include>com.google.auth:*</include>
+                <include>com.google.code.gson:*</include>
+                <include>com.google.http-client:*</include>
+                <include>com.google.api-client:*</include>
+                <include>com.google.oauth-client:*</include>
+                <include>com.google.guava:*</include>
+                <include>com.google.errorprone:*</include>
+                <include>com.google.j2objc:*</include>
+                <include>com.google.code.findbugs:*</include>
+                <include>io.grpc:*</include>
+                <include>io.opencensus:*</include>
+                <include>org.threeten:*</include>
+            </includes>
+            <unpackOptions>
+                <excludes>
+                    <exclude>META-INF/*.SF</exclude>
+                    <exclude>META-INF/*.DSA</exclude>
+                    <exclude>META-INF/*.RSA</exclude>
+                </excludes>
+            </unpackOptions>
+        </dependencySet>
+    </dependencySets>
+</assembly>

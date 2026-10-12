@@ -1,0 +1,27 @@
+# Infrastructure for the EventStore samples: PostgreSQL for storage and
+# LavinMQ as the AMQP 0-9-1 broker (any RabbitMQ-compatible broker works).
+#
+#   docker compose -f samples/docker-compose.yml up -d
+#
+# LavinMQ management UI: http://localhost:15672 (guest / guest)
+services:
+  postgres:
+    image: postgres:16
+    container_name: eventstore-sample-postgres
+    environment:
+      POSTGRES_DB: eventstore
+      POSTGRES_USER: eventstore
+      POSTGRES_PASSWORD: changeme
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U eventstore"]
+      interval: 2s
+      retries: 30
+
+  lavinmq:
+    image: cloudamqp/lavinmq:2.1.0
+    container_name: eventstore-sample-lavinmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"

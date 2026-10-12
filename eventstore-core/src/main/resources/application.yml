@@ -1,0 +1,23 @@
+# Import shared configuration. Profile files (application-<profile>.yml) are
+# loaded by Spring Boot for the active profiles. No profile is active by default:
+# local runs set SPRING_PROFILES_ACTIVE=dev explicitly.
+spring:
+  config:
+    import:
+      - "classpath:application-common.yml"  # Shared across all services
+
+  application:
+    name: eventstore-core
+
+eventstore:
+  auth:
+    bearer-token: ${EVENTSTORE_BEARER_TOKEN}
+  realtime-retention:
+    enabled: ${RETENTION_JOB_ENABLED}
+    delete-batch-size: ${DELETE_BATCH_SIZE}
+    retention-days: ${RETENTION_DAYS_TO_KEEP}
+    cron: ${RETENTION_JOB_CRON}
+  big-query:
+    enabled: ${EVENTSTORE_BIG_QUERY_ENABLED:false}
+    dataset: ${DATASET:}
+    table: ${TABLE:}

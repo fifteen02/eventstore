@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Parent of the Java samples. Not part of the root reactor, so samples are never published.
+
+  Install EventStore's client library first (from the repository root):
+    mvn -q install -DskipTests
+
+  Then run any sample from the repository root, e.g.:
+    mvn -q -f samples/02-pull-stream compile exec:java
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.fifteen02</groupId>
+    <artifactId>eventstore-samples</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <name>eventstore-samples</name>
+    <description>Runnable EventStore samples</description>
+
+    <modules>
+        <module>02-pull-stream</module>
+        <module>03-push-replayable</module>
+        <module>04-push-realtime</module>
+        <module>05-sharded-readers</module>
+        <module>06-amqp-producer</module>
+        <module>07-projection</module>
+    </modules>
+
+    <properties>
+        <maven.compiler.release>25</maven.compiler.release>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <eventstore.version>1.0-SNAPSHOT</eventstore.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- Header names (MessageHeaders) and the acknowledgement payload (AcknowledgeTo). -->
+            <dependency>
+                <groupId>com.fifteen02</groupId>
+                <artifactId>eventstore-common</artifactId>
+                <version>${eventstore.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.rabbitmq</groupId>
+                <artifactId>amqp-client</artifactId>
+                <version>5.31.0</version>
+            </dependency>
+            <dependency>
+                <groupId>tools.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>3.1.2</version>
+            </dependency>
+            <!-- amqp-client logs through SLF4J; keep sample output quiet. -->
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>2.0.17</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-nop</artifactId>
+                <version>2.0.17</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>exec-maven-plugin</artifactId>
+                    <version>3.5.1</version>
+                    <configuration>
+                        <mainClass>${sample.mainClass}</mainClass>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+</project>

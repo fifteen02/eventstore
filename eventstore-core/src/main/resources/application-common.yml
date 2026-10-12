@@ -1,0 +1,78 @@
+# Common Configuration Shared Across All Microservices
+# =====================================================
+
+spring:
+  web:
+    error:
+      # Input errors (400, 413, 503) carry a reason the client needs to fix the request.
+      include-message: always
+  # Common database configuration
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://${database.host}:${database.port}/${database.name.eventstore}
+    username: ${database.username.eventstore}
+    password: ${database.password.eventstore}
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
+      # Connection lifetime - must be less than DB's idle timeout (typically 30 min)
+      max-lifetime: 1200000        # 20 minutes
+      idle-timeout: 600000         # 10 minutes
+      # Connection validation
+      keepalive-time: 300000       # Validate idle connections every 5 minutes
+      connection-timeout: 30000    # 30 seconds to get a connection from pool
+      validation-timeout: 5000    # 5 seconds to validate a connection
+
+  # Common JPA/Hibernate settings (moved from common config)
+  jpa:
+    hibernate:
+      ddl-auto: update # Let Hibernate handle table creation automatically
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+        type:
+          json_format_mapper: com.fifteen02.eventstore.config.ToolsJacksonJsonFormatMapper
+        jdbc:
+          time_zone: UTC  # Force Hibernate to use UTC for all timestamps
+
+  lifecycle:
+    timeout-per-shutdown-phase: 30s
+
+# Common database connection properties
+database:
+  host: ${DB_HOST:localhost}
+  port: ${DB_PORT:5432}
+  name:
+    eventstore: ${DB_NAME_EVENTSTORE:eventstore}
+  username:
+    eventstore: ${DB_USERNAME_EVENTSTORE:eventstore}
+  password:
+    eventstore: ${DB_PASSWORD_EVENTSTORE:changeme}
+
+
+# Common management endpoints. /actuator/** is not behind the bearer token, so
+# only health (status only) and info are exposed. See docs/operations.md to
+# expose metrics on a private management port.
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: never
+
+# Service-specific logging
+logging:
+  level:
+    org.apache.pekko: INFO
+
+# Service-specific server configuration
+server:
+  port: 8083
+  shutdown: graceful
+
+eventstore:
+  amqp:
+    enabled: false

@@ -1,0 +1,34 @@
+# Sample 03: one replayable interface.
+#
+#   samples/bin/run-eventstore.sh 03-push-replayable
+
+spring:
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+    virtual-host: /
+
+eventstore:
+  amqp:
+    enabled: true
+
+  interfaces:
+    # EventStore pushes matching messages to "billing.sink" and tracks how far
+    # billing has acknowledged on "billing.ack". After an EventStore restart it
+    # pushes everything after the last saved position again.
+    - name: billing
+      type: replayable
+      include-types:
+        - OrderPlaced
+        - OrderCancelled
+      sink:
+        amqp:
+          virtual-host: /
+      ack:
+        amqp:
+          virtual-host: /
+        # The acknowledged position is saved once this many contiguous indices are
+        # acknowledged. Small here so restarts visibly re-deliver; the default is 1000.
+        batch: 5

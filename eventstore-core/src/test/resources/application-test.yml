@@ -1,0 +1,25 @@
+management:
+  tracing:
+    enabled: false
+  defaults:
+    metrics:
+      export:
+        enabled: false
+  otlp:
+    logging:
+      export:
+        enabled: false
+    metrics:
+      export:
+        enabled: false
+    tracing:
+      export:
+        enabled: false
+  stackdriver:
+    metrics:
+      export:
+        enabled: false
+  simple:
+    metrics:
+      export:
+        enabled: true

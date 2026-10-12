@@ -1,0 +1,26 @@
+# Sample 04: one realtime interface.
+#
+#   samples/bin/run-eventstore.sh 04-push-realtime
+
+spring:
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+    virtual-host: /
+
+eventstore:
+  amqp:
+    enabled: true
+
+  interfaces:
+    # EventStore publishes matching messages to "notifications.sink" as they are
+    # ingested. No acknowledgements, no saved position, no replay.
+    - name: notifications
+      type: realtime
+      include-types:
+        - OrderShipped
+      sink:
+        amqp:
+          virtual-host: /

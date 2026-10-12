@@ -1,0 +1,18 @@
+# Sample 06: accept messages on an AMQP input queue.
+#
+#   samples/bin/run-eventstore.sh 06-amqp-producer
+
+spring:
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+    virtual-host: /
+
+eventstore:
+  amqp:
+    enabled: true
+  input:
+    # Declared (durable) on startup. Producers publish here on the default exchange.
+    queue: eventstore.input

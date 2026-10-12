@@ -1,0 +1,52 @@
+# Development Environment Configuration
+# ====================================
+
+spring:
+  jpa:
+    show-sql: true
+
+management:
+  tracing:
+    enabled: false
+  defaults:
+    metrics:
+      export:
+        enabled: false
+  otlp:
+    logging:
+      export:
+        enabled: false
+    metrics:
+      export:
+        enabled: false
+    tracing:
+      export:
+        enabled: false
+  stackdriver:
+    metrics:
+      export:
+        enabled: false
+  simple:
+    metrics:
+      export:
+        enabled: true
+
+# Logging Levels - Development
+logging:
+  level:
+    root: WARN
+    com.fifteen02: DEBUG
+    com.fifteen02.web: DEBUG
+    org.springframework.web: DEBUG
+    org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping: DEBUG
+
+# Service-specific eventstore configuration
+eventstore:
+  auth:
+    bearer-token: ${EVENTSTORE_BEARER_TOKEN:dev-eventstore-token}
+  lookback: 2000
+  input:
+    queue: eventstore.input
+
+database:
+  port: ${DB_PORT:5433}
